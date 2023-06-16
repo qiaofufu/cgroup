@@ -8,7 +8,6 @@ import (
 	"github.com/qiaofufu/cgroup/subsystem"
 )
 
-
 type CgroupManager struct {
 	Name string
 	mountPath string
@@ -20,6 +19,7 @@ func NewCgroupManager(name string) (*CgroupManager, error) {
 	path := path.Join("/sys/fs/cgroup", name)
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
+		fmt.Println(path)
 		err := os.Mkdir(path, os.ModePerm)
 		if err != nil  {
 			return nil, err
@@ -50,12 +50,12 @@ func (cm *CgroupManager) SetMountPoint(path string) error {
 }
 
 func (cm *CgroupManager) Set(res *subsystem.ResourceConfig) error {
+	
 	for _, v := range cm.Subsystems {
 		if err := v.Set(cm.GetCgroupPath(), res); err != nil {
 			return err
 		}
 	}
-	println(res.MemoryLimit)
 	return nil
 }
 
@@ -71,6 +71,7 @@ func (cm *CgroupManager) Apply(pid int) error {
 func (cm *CgroupManager) Destroy()  {
 	for _, v := range cm.Subsystems {
 		v.Destroy(cm.GetCgroupPath())
+		return
 	}
 }
 

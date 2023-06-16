@@ -15,6 +15,7 @@ func (c *Cpuset) Set(cgroupPath string, resourceConfig *ResourceConfig) error {
 	filepath := path.Join(cgroupPath, "cpu.max")
 	ss := strings.Split(resourceConfig.Cpuset, "-")
 	args := ""
+	
 	if len(ss) < 2 {
 		args = ss[0]
 	} else {
